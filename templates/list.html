@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>小峰数据中心</title>
+    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+
+</head>
+<style>
+
+
+</style>
+<body>
+
+<nav class="navbar navbar-default" role="navigation">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a class="navbar-brand"  href="/static/html/index.html">国开网站刷课程序</a>
+        </div>
+        <div>
+            <ul class="nav navbar-nav">
+                <li><a href="/login.html">登录</a></li>
+                <li><a href="/">工作</a></li>
+                {#                <li><a href="/workStatus/">工作进度</a></li>#}
+                <li class="active"><a>日志</a></li>
+                <li><a href="/download/">导出测验成绩</a></li>
+
+                <!-- <li class="dropdown">
+                   <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                       Java
+                       <b class="caret"></b>
+                   </a>
+                   <ul class="dropdown-menu">
+                       <li><a href="#">jmeter</a></li>
+                       <li><a href="#">EJB</a></li>
+                       <li><a href="#">Jasper Report</a></li>
+                       <li class="divider"></li>
+                       <li><a href="#">分离的链接</a></li>
+                       <li class="divider"></li>
+                       <li><a href="#">另一个分离的链接</a></li>
+                   </ul>
+               </li>-->
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="container">
+
+
+    <div id="row">
+        <div>
+
+            <table class="table">
+                <div>
+                    <form action="/list/" method="post">
+                    起始时间：<input name="startTime" type="datetime-local">&nbsp;
+                         结束时间：<input  type="datetime-local" name="endTime">&nbsp;
+                        <button type="submit" class="btn btn-warning">查询</button>
+                </form>
+                </div>
+            <div style="height: 50px;">
+
+            </div>
+                <thead>
+                <tr>
+
+                    <th>用户名</th>
+                    <th>姓名</th>
+                    <th>科目</th>
+                    <th>正在进行</th>
+                    <th>分数</th>
+                    <th>时间</th>
+                    {#                    <th>类型</th>#}
+                </tr>
+                </thead>
+                <tbody id="reulstTable">
+                {% for item in contacts %}
+                    <tr>
+
+                        <td>{{ item.username }}</td>
+                        <td>{{ item.name }}</td>
+                        <td>{{ item.kecheng }}</td>
+                        <td>{{ item.timu }}</td>
+                        <td>{{ item.score }}</td>
+                        <td>{{ item.create_dt }}</td>
+                        {#                        <td>{{ item.status }}</td>#}
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+
+        </div>
+        <div class="pagination" style="font-size: 16px;">
+                        <span class="step-links">
+                            {% if contacts.has_previous %}
+                                <a href="?page={{ contacts.previous_page_number }}">上一页</a>
+                            {% endif %}
+
+                            <span class="current">
+                                当前页数 {{ contacts.number }} 总页数 {{ contacts.paginator.num_pages }}.
+                            </span>
+
+                            {% if contacts.has_next %}
+                                <a href="?page={{ contacts.next_page_number }}">下一页</a>
+                            {% endif %}
+                        </span>
+        </div>
+    </div>
+</div>
+</body>
+<script type="text/javascript">
+    function checkFacesApplication() {
+        var form = new FormData(document.getElementById("uploadFacesForm"));
+        $.ajax({
+            url: "/save/",
+            type: "post",
+            data: form,
+            cache: false,
+            processData: false,
+            contentType: false,
+            success: function(data) {
+                alert(data.msg);
+            },
+            error: function(e) {
+                alert("网络错误，请重试！！");
+            }
+        });
+    }
+    function upload() {
+        $("#loaddiv").show();
+        var form = new FormData(document.getElementById("myform"));
+        $.ajax({
+            url: "/import/",
+            type: "post",
+            data: form,
+            async : true,
+            cache: false,
+            processData: false,
+            contentType: false,
+            success: function(data) {
+                var result = data.msg;
+                alert(result);
+            },
+            error: function(e) {
+                alert("网络错误，请重试！！");
+            }
+        });
+    }
+
+</script>
+</html>

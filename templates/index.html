@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>小峰数据中心</title>
+    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+    <script>
+
+        var int=self.setInterval("clock()",10000);
+        function clock()
+        {
+            $.ajax({
+                "async": false,
+                "url": "/getLogs/",
+                "data": {},
+                "type": "GET",
+                "dataType": "json",
+                "success": function (data) {
+                    console.log(data);
+                    var result = data.msg;
+                    var table = "";
+                    for(var i=0;i<result.length;i++){
+                        var status = result[i].status;
+                        if("J" !==  status){
+                            table += "<tr>\n" +
+                            "                    <td>"+result[i].name+"</td>\n" +
+                            "                    <td>"+result[i].kecheng+"</td>\n" +
+                            "                    <td>"+result[i].timu+"</td>\n" +
+                            "                    <td>"+result[i].score+"</td>\n" +
+                            "                    <td>"+result[i].create_dt+"</td>\n" +
+                            "                </tr>";
+                        }else{
+                            table += "<tr style='color: red'>\n" +
+                            "                    <td>"+result[i].name+"</td>\n" +
+                            "                    <td>"+result[i].kecheng+"</td>\n" +
+                            "                    <td>"+result[i].timu+"</td>\n" +
+                            "                    <td>"+result[i].score+"</td>\n" +
+                            "                    <td>"+result[i].create_dt+"</td>\n" +
+                            "                </tr>";
+                        }
+                    }
+                    $("#reulstTable").html(table);
+                }
+            });
+        }
+    </script>
+</head>
+<style>
+
+
+</style>
+<body>
+
+<nav class="navbar navbar-default" role="navigation">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a class="navbar-brand"  href="/static/html/index.html">国开网站刷课程序</a>
+        </div>
+        <div>
+            <ul class="nav navbar-nav">
+                <li><a href="/login.html">登录</a></li>
+                <li class="active"><a href="#">工作</a></li>
+{#                <li><a href="/workStatus/">工作进度</a></li>#}
+                <li><a href="/list/">日志</a></li>
+                <li><a href="/download/">导出测验成绩</a></li>
+
+                <!-- <li class="dropdown">
+                   <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                       Java
+                       <b class="caret"></b>
+                   </a>
+                   <ul class="dropdown-menu">
+                       <li><a href="#">jmeter</a></li>
+                       <li><a href="#">EJB</a></li>
+                       <li><a href="#">Jasper Report</a></li>
+                       <li class="divider"></li>
+                       <li><a href="#">分离的链接</a></li>
+                       <li class="divider"></li>
+                       <li><a href="#">另一个分离的链接</a></li>
+                   </ul>
+               </li>-->
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="container">
+    <form role="form" id="myform">
+        <div class="form-group">
+            <label for="inputfile">批量导入用户数据</label>
+            <input name= "excel_file" type="file" id="inputfile">
+            <!--            <p class="help-block">人脸搜索功能，秒回结果</p>-->
+        </div>
+
+        <button type="button" class="btn btn-warning" onclick="upload()">运行</button>
+    </form>
+    <!-- 模态框（Modal） -->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        &times;
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel">
+                        更新资料库
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <form role="form" id="uploadFacesForm">
+                        {#                        <div class="form-group">#}
+                        {#                            <label for="name">线程数</label>#}
+                        {#                            <input type="number" name="ts" class="form-control" id="name"#}
+                        {#                                   placeholder="请输入线程数(0-20)">#}
+                        {#                        </div>#}
+                        <div class="form-group">
+                            <table>
+                                <tr>
+                                    <td>
+                                        <label for="name">线程数</label>
+                                        <input type="number" name="ts" class="form-control" id="name" value="{{ settings.threads }}"
+                                               placeholder="请输入线程数(0-20)">
+                                    </td>
+
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label for="inputfile">延迟</label>
+                                        <input type="number" name="times" class="form-control" id="name" value="{{ settings.period }}"
+                                               placeholder="请输入延迟提交时间,单位秒">
+                                    </td>
+
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label for="inputfile">正确率(%s)</label>
+                                        <input type="number" name="accuracy" class="form-control" id="name" value="{{ settings.accuracy }}"
+                                               placeholder="请输入正确率%">
+                                    </td>
+
+                                </tr>
+                            </table>
+                            <br>
+
+                        </div>
+                        <div class="form-group">
+
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                    </button>
+                    <button type="button" onclick="checkFacesApplication()" class="btn btn-primary">
+                        保存
+                    </button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal -->
+    </div>
+    <div id="row">
+        <div>
+
+            <table class="table">
+                <caption>
+
+                    温馨提示:<br>
+                    上传Excel包含三列,第一列用户名，第二列是密码，第三列是课程全名，第四列是姓名<br>
+                    自动刷课延迟提交不可设置太快，否则程序会假死状态 &nbsp;&nbsp;<a data-toggle="modal" data-target="#myModal">设置运行参数</a>
+                    {#                    <div id="loaddiv" style="display: none;">#}
+                    {#                        <img height="50" src="/static/imgs/loading.gif">#}
+                    {#                    </div>#}
+                </caption>
+                <thead>
+                <tr>
+                    <th>用户</th>
+                    <th>科目</th>
+                    <th>正在进行</th>
+                    <th>分数</th>
+                    <th>时间</th>
+                </tr>
+                </thead>
+                <tbody id="reulstTable">
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+</body>
+<script type="text/javascript">
+    function checkFacesApplication() {
+        var form = new FormData(document.getElementById("uploadFacesForm"));
+        $.ajax({
+            url: "/save/",
+            type: "post",
+            data: form,
+            cache: false,
+            processData: false,
+            contentType: false,
+            success: function(data) {
+                alert(data.msg);
+                 location.reload();
+            },
+            error: function(e) {
+                alert("网络错误，请重试！！");
+            }
+        });
+    }
+    function upload() {
+        $("#loaddiv").show();
+        var form = new FormData(document.getElementById("myform"));
+        $.ajax({
+            url: "/import/",
+            type: "post",
+            data: form,
+            async : true,
+            cache: false,
+            processData: false,
+            contentType: false,
+            success: function(data) {
+                var result = data.msg;
+                alert(result);
+            },
+            error: function(e) {
+                alert("网络错误，请重试！！");
+            }
+        });
+    }
+
+</script>
+</html>
